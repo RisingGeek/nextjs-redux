@@ -1,65 +1,54 @@
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { INCREMENT_COUNT_KEY, UPDATE_PROFILE } from '../redux/actionTypes';
 
 export default function Home() {
+  const [nameInput, setNameInput] = useState("");
+  const [emailInput, setEmailInput] = useState("");
+
+  const { name, email } = useSelector(state => state.profile);
+  const { countKey } = useSelector(state => state.counter);
+  const dispatch = useDispatch();
+
   return (
-    <div className={styles.container}>
+    <div>
       <Head>
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+      <div>
+        <input
+          type="text"
+          placeholder="Enter Name"
+          value={nameInput}
+          onChange={event => setNameInput(event.target.value)}
+        />
+      </div>
+      <div>
+        <input
+          type="email"
+          placeholder="Enter Email"
+          value={emailInput}
+          onChange={event => setEmailInput(event.target.value)}
+        />
+      </div>
+      <button
+        onClick={() => dispatch({
+          type: UPDATE_PROFILE,
+          payload: { name: nameInput, email: emailInput }
+        })
+        }>Submit profile</button>
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+      <div>
+        Value from store:
+          <p>Name: {name}</p>
+        <p>Email: {email}</p>
+      </div>
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
+      <h4>countKey: {countKey}</h4>
+      <button onClick={() => dispatch({ type: INCREMENT_COUNT_KEY })}>Increment count</button>
     </div>
   )
 }
